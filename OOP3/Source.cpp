@@ -87,4 +87,92 @@ public:
 	}
 };
 
+class Storage {
+protected:
+	int count;
+	int size;
+	Object** object;
+public:
+	Storage(int size) {
+		cout << "Storage(int size)" << endl;
+		this->size = size;
+		count = 0;
+		object = new Object * [size];
+		for (int i = 0; i < size; i++) {
+			object[i] = NULL;
+		}
+	}
+	void addObject(Object* t, int i) {
+		if (i < size && object[i] == NULL) {
+			object[i] = t;
+			count++;
+			cout << "void addObject(Object* t, int i)" << endl;
+		}
+		else
+			cout << "Îøèáêà void addObject(Object* t, int i)" << endl;
+	}
+	Object* getObject(int i) {
+		if (object[i] != NULL) {
+			cout << "Object* getObject(int i)" << endl;
+			return object[i];
+		}
+		else
+			cout << "Îøèáêà Object* getObject(int i)" << endl;
+	}
+	void increaseSize(int newsize) {
+		Object** NewObject = new Object * [size + newsize];
+		for (int i = 0; i < size + newsize; i++) 
+			NewObject[i] = NULL;
+		
+		for (int i = 0; i < size; i++) 
+			if (object[i] != NULL)
+				NewObject[i] = object[i];
+		delete [] object;
+		object = NewObject;
+		size += newsize;
+	}
+	void deleteObject(int i) {
+		if (object[i] != NULL) {
+			object[i] = NULL;
+			count--;
+			cout << "void deleteObject(int i)" << endl;
+		}
+		else
+			cout << "Îøèáêà void deleteObject(int i)" << endl;
+	}
+	int getsize() {
+		return size;
+	}
+	~Storage() {
+		cout << "~Storage()" << endl;
+		delete[] object;
+	}
+};
+
+int main() {
+	setlocale(LC_ALL, "rus");
+	unsigned int start_time = clock();
+	Storage p(100);
+	for (int i = 0; i < 10; i++) {
+		if(rand() % 2 == 0)
+			if (rand() % 5 == 0) {
+				Object* t = new Point;
+				p.addObject(t, rand() % p.getsize());
+			}
+			else {
+				Object* t = new Point3D;
+				p.addObject(t, rand() % p.getsize());
+			}
+		else {
+			if (rand() % 3 == 1)
+				p.deleteObject(rand() % p.getsize());
+			else
+				p.getObject(rand() % p.getsize());
+		}
+
+	}
+	unsigned int end_time = clock();
+	unsigned int result_time = end_time - start_time;
+	cout << "work time:" << result_time << "ms" << endl;
+}
 
